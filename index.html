@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Mapillary - Avalon Mapping Plan</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://unpkg.com/mapillary-js@1.7.1/dist/mapillary-js.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/mapillary-js@1.7.1/dist/mapillary-js.min.css">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.24.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.24.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v1.3.1/mapbox-gl-geocoder.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v1.3.1/mapbox-gl-geocoder.css' type='text/css' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiY2JlZGRvdyIsImEiOiI5Q09YRG1RIn0.Izu6OPJ4CEEaSSpGuys3Xg';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/dark-v9',
+    center: [-118.327416, 33.342847],
+    zoom: 14
+});
+
+map.on('load', function () {
+    map.addSource('green', {
+        'type': 'geojson',
+        'data': 'https://gist.githubusercontent.com/anonymous/fa4cbafc113e5890edc740a1aa73fe69/raw/0edb2750c693248f40c3ff9408009ecb3c050fd2/map.geojson'});
+
+    map.addLayer({
+        'id': 'green',
+        'type': 'fill',
+        'source': 'green',
+        'paint': {
+            'fill-color': 'green',
+            'fill-opacity': 0.5}
+            });
+
+      map.addSource('pink', {
+                'type': 'geojson',
+                'data': 'https://gist.githubusercontent.com/anonymous/210ad5d93355cfe4911eecbde00043ca/raw/73dbbfe1b212b5e7e9d25ef5603ed75bd3a008a2/map.geojson'});
+
+      map.addLayer({
+                'id': 'pink',
+                'type': 'fill',
+                'source': 'pink',
+                'paint': {
+                    'fill-color': 'pink',
+                    'fill-opacity': 0.5}
+                    });
+
+                    map.addSource('yellow', {
+                              'type': 'geojson',
+                              'data': 'https://gist.githubusercontent.com/anonymous/858401573a9f5979064e17330d6661b6/raw/b1ad78c160da01a76e14052c4c8699596f39b99b/map.geojson'});
+
+                    map.addLayer({
+                              'id': 'yellow',
+                              'type': 'fill',
+                              'source': 'yellow',
+                              'paint': {
+                                  'fill-color': 'yellow',
+                                  'fill-opacity': 0.5}
+                                  });
+
+                                  map.addSource('mapillary', {
+                                      type: 'vector',
+                                      tiles: ['https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mvt'],
+                                           minzoom: 0,
+                                           maxzoom: 14
+                                  });
+                                  map.addLayer({
+                                        'id': 'mapillary',
+                                        'type': 'line',
+                                        'source': 'mapillary',
+                                        'source-layer': 'mapillary-sequences',
+                                        'layout': {
+                                              'line-cap': 'round',
+                                              'line-join': 'round'
+                                                   },
+                                        'paint': {
+                                              'line-opacity': 0.6,
+                                              'line-color':   'rgb(53, 175, 109)',
+                                              'line-width':   2
+                                             }
+                                        });
+
+
+
+
+            map.addControl(new mapboxgl.Geocoder());
+            map.doubleClickZoom.enable();
+            var nav1 = new mapboxgl.Navigation({position: 'top-left'});
+            map.addControl(nav1);
+            var geo = new mapboxgl.Geolocate({position: 'bottom-left'});
+            map.addControl(geo);
+            geo.on("click", function() {
+              var loc = Geolocation.getCurrentPosition();
+              console.log(loc);
+              map.flyTo({
+                center: [loc]
+            });});});
+
+
+</script>
+
+</body>
+</html>
