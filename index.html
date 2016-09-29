@@ -23,11 +23,35 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY2JlZGRvdyIsImEiOiI5Q09YRG1RIn0.Izu6OPJ4CEEaS
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v9',
-    center: [-118.327416, 33.342847],
-    zoom: 14
+    center: [-118.331490, 33.335740],
+    zoom: 13
 });
 
 map.on('load', function () {
+
+  map.addSource('mly', {
+      type: 'vector',
+      tiles: ['https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mapbox'],
+           minzoom: 0,
+           maxzoom: 16
+  });
+  map.addLayer({
+        'id': 'mly',
+        'type': 'line',
+        'source': 'mly',
+        'source-layer': 'mapillary-sequences',
+        'layout': {
+              'line-cap': 'round',
+              'line-join': 'round'
+                   },
+        'paint': {
+              'line-opacity': 0.6,
+              'line-color':   'rgb(53, 175, 109)',
+              'line-width':   2
+             }
+        });
+
+
     map.addSource('green', {
         'type': 'geojson',
         'data': 'https://gist.githubusercontent.com/anonymous/fa4cbafc113e5890edc740a1aa73fe69/raw/0edb2750c693248f40c3ff9408009ecb3c050fd2/map.geojson'});
@@ -57,40 +81,50 @@ map.on('load', function () {
                     map.addSource('yellow', {
                               'type': 'geojson',
                               'data': 'https://gist.githubusercontent.com/anonymous/858401573a9f5979064e17330d6661b6/raw/b1ad78c160da01a76e14052c4c8699596f39b99b/map.geojson'});
-
-                    map.addLayer({
-                              'id': 'yellow',
-                              'type': 'fill',
-                              'source': 'yellow',
-                              'paint': {
-                                  'fill-color': 'yellow',
-                                  'fill-opacity': 0.5}
-                                  });
-
-                                  map.addSource('mapillary', {
-                                      type: 'vector',
-                                      tiles: ['https://d2munx5tg0hw47.cloudfront.net/tiles/{z}/{x}/{y}.mvt'],
-                                           minzoom: 0,
-                                           maxzoom: 14
-                                  });
-                                  map.addLayer({
-                                        'id': 'mapillary',
-                                        'type': 'line',
-                                        'source': 'mapillary',
-                                        'source-layer': 'mapillary-sequences',
-                                        'layout': {
-                                              'line-cap': 'round',
-                                              'line-join': 'round'
-                                                   },
+                              map.addLayer({
+                                        'id': 'yellow',
+                                        'type': 'fill',
+                                        'source': 'yellow',
                                         'paint': {
-                                              'line-opacity': 0.6,
-                                              'line-color':   'rgb(53, 175, 109)',
-                                              'line-width':   2
-                                             }
-                                        });
+                                            'fill-color': 'yellow',
+                                            'fill-opacity': 0.5}
+                                            });
+                              map.addSource("campsite", {
+                  "type": "geojson",
+                  "data": 'https://gist.githubusercontent.com/anonymous/bd980e7de71f5d8ab86f098e88edd1c3/raw/ec70f2f205cf024d2a81289f04715f59c60420fd/map.geojson'
+                });
 
+              map.addLayer({
+                  "id": "campsite",
+                  "type": "symbol",
+                  "source": "campsite",
+                  "layout": {
+                      "icon-image": "{marker-symbol}-15",
+                      "text-field": "Campsite",
+                      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                      "text-offset": [0, 0.6],
+                      "text-anchor": "top"
+                  },
 
+              });
 
+              map.addSource("fire", {
+  "type": "geojson",
+  "data": 'https://gist.githubusercontent.com/anonymous/aa31bd1c80fc277e331aa50ab8e9aed2/raw/a892abdd1cfcf21368b3ed000662ceaa5ec14e12/map.geojson'
+});
+
+map.addLayer({
+  "id": "fire",
+  "type": "symbol",
+  "source": "fire",
+  "layout": {
+      "icon-image": "{marker-symbol}-15",
+      "text-field": "Fire Station 55",
+      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+      "text-offset": [0, 0.6],
+      "text-anchor": "top"
+  }
+});
 
             map.addControl(new mapboxgl.Geocoder());
             map.doubleClickZoom.enable();
@@ -103,7 +137,10 @@ map.on('load', function () {
               console.log(loc);
               map.flyTo({
                 center: [loc]
-            });});});
+            });});
+
+
+          });
 
 
 </script>
